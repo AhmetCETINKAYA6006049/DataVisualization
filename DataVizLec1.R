@@ -25,7 +25,7 @@ mtcars
 hist(mtcars$mpg)
 hist(mtcars$mpg, breaks = 10)
 
-qplot(mtcars$mpg) #bindwith default 30
+qplot(mtcars$mpg) #bindwidth default 30
 qplot(mpg, data = mtcars, binwidth = 4)
 
 #box plot
