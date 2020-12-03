@@ -1,0 +1,22 @@
+---
+title: "Ahmet ÇETİNKAYA COVID19 TÜRKİYE VERİLER"
+author: "Ahmet ÇETİNKAYA"
+date: "03/12/2020"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+library(readr)
+
+covidVeri <- read_csv("COVID19TurkiyeResmiVeri.csv")
+
+View(covidVeri)
+
+library(ggplot2)
+p <- ggplot(data = covidVeri)

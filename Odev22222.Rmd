@@ -1,0 +1,78 @@
+---
+title: "Odev-2"
+author: "Ahmet ÇETİNKAYA"
+date: "03/12/2020"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(
+ fig.width = 6,
+ fig.asp = 0.8,
+ out.width = "30%"
+)
+```
+
+---
+title: 15.Kasım.2020-30.Kasım.2020 COVID-19 Verileri
+---
+```{r covid-19 Türkiye Kasım 2020, echo=FALSE, message=FALSE, warning=FALSE}
+library(memisc)
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(hrbrthemes)
+covidVeri <- read_csv("COVID19TurkiyeResmiVeri.csv" )
+#strptime(covidVeri$tarih, "%m/%d")
+
+ggplot(covidVeri, aes(covidVeri$tarih, covidVeri$toplam_vaka)) + 
+  geom_col(fill= "#6A1B9A") +
+  labs(x = "Tarih", y = "Toplam Vaka", title = "Kasım 2020 COVID Toplam Vaka Sayısı")+
+  scale_y_continuous(labels = scales::comma) 
+
+
+ggplot(covidVeri, aes(covidVeri$tarih, covidVeri$toplam_olum)) + 
+  geom_col(fill= "#AB47BC") +
+  labs(x = "Tarih", y = "Toplam Ölüm", title = "Kasım 2020 COVID Toplam Ölüm Sayısı")+
+  scale_y_continuous(labels = scales::comma)
+
+
+ggplot(covidVeri, aes(covidVeri$tarih, covidVeri$gunluk_vaka)) + 
+  geom_col(fill= "orange") +
+  labs(x = "Tarih", y = "Günlük Vaka", title = "Kasım 2020 COVID Günlük Vaka Sayısı")+
+  scale_y_continuous(labels = scales::comma) 
+
+
+ggplot(covidVeri, aes(covidVeri$tarih, covidVeri$gunluk_olum)) + 
+  geom_col(fill= "#F44336") +
+  labs(x = "Tarih", y = "Günlük Ölüm", title = "Kasım 2020 COVID Günlük Ölüm Sayısı")+
+  scale_y_continuous(labels = scales::comma) 
+
+
+#vaka ve ölümler
+df_gunluk_vaka <- data.frame(covidVeri$tarih, covidVeri$gunluk_vaka)
+
+df_gunluk_olum <- data.frame(covidVeri$tarih, covidVeri$gunluk_olum)
+
+df_toplam_vaka <- data.frame(covidVeri$tarih, covidVeri$toplam_vaka)
+
+df_toplam_olum <- data.frame(covidVeri$tarih, covidVeri$toplam_olum)
+
+df_tum_veriler <- data.frame(covidVeri$tarih, covidVeri$toplam_vaka, covidVeri$toplam_olum, covidVeri$gunluk_vaka, covidVeri$gunluk_olum)
+
+melt_vakalari <- reshape2::melt(df_tum_veriler, id.var = "covidVeri.tarih")
+
+
+ggplot(melt_vakalari, aes(x = covidVeri.tarih, y = value, group = variable, col = variable)) +
+  geom_line() +
+  scale_y_log10(name = "Vaka Sayıları", labels = scales::comma) 
+
+
+
+
+```
+
