@@ -1,6 +1,6 @@
 ---
-title: "IZV-515 VERi GöRSELLESTIRME VE IS RAPORLAMA"
-author: "Ahmet ÇETINKAYA-6006049"
+title: "IZV-515 VERi GÃ¶RSELLEÅžTÄ°RME VE Ä°Åž RAPORLAMA"
+author: "Ahmet Ã‡ETÄ°NKAYA-6006049"
 date: "05/12/2020"
 output:
   html_document:
@@ -18,7 +18,6 @@ knitr::opts_chunk$set(echo = FALSE)
 ```{r  covid-19 Turkiye Kasim 2020, echo=FALSE, message=FALSE, warning=FALSE, fig.height=50.0, fig.width=50.0}
 #install.packages('cowplot')
 #install.packages('ggpubr')
-
 library(readr)
 library(ggplot2)
 library(dplyr)
@@ -27,32 +26,20 @@ library(readxl)
 library(lubridate)
 library(cowplot)
 library(ggpubr)
-
-
 covidVeri <- read_excel("tarihselveri.xlsx")
-View(covidVeri)
-#veriyi tarihe göre eskiden yeniye sirala
+#veriyi tarihe gÃ¶re eskiden yeniye sirala
 covidVeri$Tarih <- mdy(covidVeri$Tarih)
 covidVeri <- covidVeri[sort(order(covidVeri$Tarih),decreasing = TRUE),]
-covidVeri_tr <- filter(covidVeri, Ülke == "Türkiye")
-
+covidVeri_tr <- filter(covidVeri, Ãœlke == "TÃ¼rkiye")
 covidVeriTurkiye <- data.frame(covidVeri_tr)
-
-#Günlük ve vaka sayilari için yeni col ekle
+#GÃ¼nlÃ¼k ve vaka sayilari iÃ§in yeni col ekle
 covidVeriTurkiye$yenitani <- 0
 covidVeriTurkiye$yeniolum <- 0
-
-
 for(i in 2 : nrow(covidVeriTurkiye)){
   covidVeriTurkiye$yenitani[i] <-  covidVeriTurkiye[i, "Tani"] - covidVeriTurkiye[i-1, "Tani"]
-  covidVeriTurkiye$yeniolum[i] <-  covidVeriTurkiye[i, "Ölüm"] - covidVeriTurkiye[i-1, "Ölüm"]
+  covidVeriTurkiye$yeniolum[i] <-  covidVeriTurkiye[i, "Ã–lÃ¼m"] - covidVeriTurkiye[i-1, "Ã–lÃ¼m"]
 }
-
-
 covid_kasim <- filter(covidVeriTurkiye, Tarih >= "2020-11-15" & Tarih <= "2020-11-30")
-
-
-
 # Toplam vaka sayisi
 p_tv <- ggplot(covid_kasim, aes(Tarih, Tani)) + 
   geom_col(fill= "red") +
@@ -70,15 +57,14 @@ p_tv <- ggplot(covid_kasim, aes(Tarih, Tani)) +
     plot.caption = element_text(color = "brown", size = 30, face = "italic")
   )
 #ggsave("toplamvaka.png")
-
-# Toplam Ölüm Sayisi
-p_to <- ggplot(covid_kasim, aes(Tarih, Ölüm)) + 
+# Toplam Ã–lÃ¼m Sayisi
+p_to <- ggplot(covid_kasim, aes(Tarih, Ã–lÃ¼m)) + 
   geom_col(fill= "darkred") +
   scale_y_continuous(labels = scales::comma)+
   coord_cartesian(ylim = c(10000, 14500))+
-  labs(x = "Tarih", y = "Toplam Ölüm", 
-       title = "KasÄ±m 2020 COVID-19 Toplam Toplam Ölüm Sayisi",
-       subtitle = "15.11.2020-30.11.2020 tarihleri arasÄ± COVID-19 toplam ölüm sayisi",
+  labs(x = "Tarih", y = "Toplam Ã–lÃ¼m", 
+       title = "KasÃ„Â±m 2020 COVID-19 Toplam Toplam Ã–lÃ¼m Sayisi",
+       subtitle = "15.11.2020-30.11.2020 tarihleri arasÃ„Â± COVID-19 toplam Ã¶lÃ¼m sayisi",
        caption = "Kaynak: https://corona.cbddo.gov.tr/Home/History") + 
   theme_minimal_grid()+
   theme(axis.text = element_text(size = 50),
@@ -88,14 +74,13 @@ p_to <- ggplot(covid_kasim, aes(Tarih, Ölüm)) +
     plot.caption = element_text(color = "brown", size = 30, face = "italic")
   )
 #ggsave("toplamolum.png")
-
-# Günlük Vaka Sayisi
+# GÃ¼nlÃ¼k Vaka Sayisi
 p_gv <- ggplot(covid_kasim, aes(Tarih, yenitani)) + 
   geom_col(fill = "lightblue") +
   scale_y_continuous(labels = scales::comma) +
-  labs(x = "Tarih", y = "Günlük Vaka", 
-       title = "KasÄ±m 2020 COVID-19 Günlük Vaka Sayisi",
-       subtitle = "15.11.2020-30.11.2020 tarihleri arasÄi COVID-19 günlük vaka sayisi",
+  labs(x = "Tarih", y = "GÃ¼nlÃ¼k Vaka", 
+       title = "KasÃ„Â±m 2020 COVID-19 GÃ¼nlÃ¼k Vaka Sayisi",
+       subtitle = "15.11.2020-30.11.2020 tarihleri arasÃ„i COVID-19 gÃ¼nlÃ¼k vaka sayisi",
        caption = "Kaynak: https://corona.cbddo.gov.tr/Home/History")+
   theme_minimal_grid()+
   theme(axis.text = element_text(size = 50),
@@ -105,14 +90,13 @@ p_gv <- ggplot(covid_kasim, aes(Tarih, yenitani)) +
     plot.caption = element_text(color = "brown", size = 30, face = "italic")
   )
 #ggsave("gunlukvaka.png")
-
-# Günlük Ölüm Sayisi
+# GÃ¼nlÃ¼k Ã–lÃ¼m Sayisi
 p_go <- ggplot(covid_kasim, aes(Tarih, yeniolum)) + 
   geom_col(fill = "blue") +
   scale_y_continuous(labels = scales::comma) +
-  labs(x = "Tarih", y = "Günlük Ölüm", 
-       title = "Kasim 2020 COVID-19 Günlük Ölüm Sayisi",
-       subtitle = "15.11.2020-30.11.2020 tarihleri arasi COVID-19 günlük ölüm sayisi",
+  labs(x = "Tarih", y = "GÃ¼nlÃ¼k Ã–lÃ¼m", 
+       title = "Kasim 2020 COVID-19 GÃ¼nlÃ¼k Ã–lÃ¼m Sayisi",
+       subtitle = "15.11.2020-30.11.2020 tarihleri arasi COVID-19 gÃ¼nlÃ¼k Ã¶lÃ¼m sayisi",
        caption = "Kaynak: https://corona.cbddo.gov.tr/Home/History")+
   theme_minimal_grid() +
   theme(axis.text = element_text(size = 50),
@@ -122,31 +106,21 @@ p_go <- ggplot(covid_kasim, aes(Tarih, yeniolum)) +
     plot.caption = element_text(color = "brown", size = 30, face = "italic")
   )
 #ggsave("gunlukolum.png")
-
-#vaka ve Ã¶lÃ¼mler
+#vaka ve ÃƒÂ¶lÃƒÂ¼mler
 df_toplam_vaka <- data.frame(covid_kasim$Tarih, covid_kasim$Tani)
 #View(df_toplam_vaka)
-
-df_toplam_olum <- data.frame(covid_kasim$Tarih, covid_kasim$Ölüm)
+df_toplam_olum <- data.frame(covid_kasim$Tarih, covid_kasim$Ã–lÃ¼m)
 #View(df_toplam_olum)
-
 df_gunluk_vaka <- data.frame(covid_kasim$Tarih, covid_kasim$yenitani)
 #View(df_gunluk_vaka)
-
 df_gunluk_olum <- data.frame(covid_kasim$Tarih, covid_kasim$yeniolum)
 #View(df_gunluk_olum)
-
-
-df_tum_veriler <- data.frame(covid_kasim$Tarih, covid_kasim$Tani, covid_kasim$Ölüm, covid_kasim$yenitani, covid_kasim$yeniolum)
+df_tum_veriler <- data.frame(covid_kasim$Tarih, covid_kasim$Tani, covid_kasim$Ã–lÃ¼m, covid_kasim$yenitani, covid_kasim$yeniolum)
 #View(df_tum_veriler)
-
-colnames(df_tum_veriler)[] <- c('Tarih', 'Toplam vaka', 'Toplam Ölüm', 'Günlük Vaka', 'Günlük Ölüm')
-
+colnames(df_tum_veriler)[] <- c('Tarih', 'Toplam vaka', 'Toplam Ã–lÃ¼m', 'GÃ¼nlÃ¼k Vaka', 'GÃ¼nlÃ¼k Ã–lÃ¼m')
 #View(df_tum_veriler)
-
 melt_vakalari <- reshape2::melt(df_tum_veriler, id.var = "Tarih")
 #View(melt_vakalari)
-
 p_gt <- ggplot(melt_vakalari, aes(x = Tarih, y = value, group = variable, col = variable)) +
   geom_line(size=3) +
   scale_y_log10(name = "Vaka Sayilari (Logaritmik)", labels = scales::comma) + 
@@ -164,18 +138,11 @@ p_gt <- ggplot(melt_vakalari, aes(x = Tarih, y = value, group = variable, col = 
     legend.text = element_text(size = 30)
   )
 #ggsave("genelhat.png")
-
-# # son gün tablosu
+# # son gÃ¼n tablosu
 # p_tab <- ggtexttable(covid_kasim, rows= NULL, theme = ttheme("light"))
 # 
-
 # plot_grid(p_tv, p_to)
 # plot_grid(p_gv, p_to)
 # plot_grid(p_gt, p_tab)
 plot_grid(p_tv, p_to, p_gv, p_go, p_gt, nrow = 3, ncol = 2, align = "hv", margin(20,20,20,20))
-
 ```
-
-
-
-
