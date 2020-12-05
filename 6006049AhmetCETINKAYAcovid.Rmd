@@ -1,11 +1,11 @@
 ---
-title: "IZV-515 VERÄ° GÃ–RSELLEÅžTÄ°RME VE Ä°Åž RAPORLAMA"
-author: "Ahmet Ã‡ETÄ°NKAYA-6006049"
+title: "IZV-515 VERi GöRSELLESTIRME VE IS RAPORLAMA"
+author: "Ahmet ÇETINKAYA-6006049"
 date: "05/12/2020"
 output:
-  word_document: default 
   html_document:
     df_print: paged 
+  word_document: default 
   pdf_document: default
 ---
 
@@ -15,8 +15,9 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 
-```{r  covid-19 TÃ¼rkiye KasÄ±m 2020, echo=FALSE, message=FALSE, warning=FALSE}
-
+```{r  covid-19 Turkiye Kasim 2020, echo=FALSE, message=FALSE, warning=FALSE, fig.height=50.0, fig.width=50.0}
+#install.packages('cowplot')
+#install.packages('ggpubr')
 
 library(readr)
 library(ggplot2)
@@ -24,100 +25,109 @@ library(dplyr)
 library(hrbrthemes)
 library(readxl)
 library(lubridate)
+library(cowplot)
+library(ggpubr)
 
 
 covidVeri <- read_excel("tarihselveri.xlsx")
-#View(covidVeri)
-#veriyi tarihe gÃ¶re eskiden yeniye sÄ±rala
+View(covidVeri)
+#veriyi tarihe göre eskiden yeniye sirala
 covidVeri$Tarih <- mdy(covidVeri$Tarih)
 covidVeri <- covidVeri[sort(order(covidVeri$Tarih),decreasing = TRUE),]
-covidVeri_tr <- filter(covidVeri, Ãœlke == "TÃ¼rkiye")
-#View(covidVeriTurkiye)
+covidVeri_tr <- filter(covidVeri, Ülke == "Türkiye")
+
 covidVeriTurkiye <- data.frame(covidVeri_tr)
-#View(covidVeriTurkiye)
-#GÃ¼nlÃ¼k vaka ve Ã¶lÃ¼m sayÄ±larÄ±nÄ± yeni col olarak ekle
+
+#Günlük ve vaka sayilari için yeni col ekle
 covidVeriTurkiye$yenitani <- 0
 covidVeriTurkiye$yeniolum <- 0
 
-#View(covidVeriTurkiye)
+
 for(i in 2 : nrow(covidVeriTurkiye)){
-  covidVeriTurkiye$yenitani[i] <-  covidVeriTurkiye[i, "TanÄ±"] - covidVeriTurkiye[i-1, "TanÄ±"]
-  covidVeriTurkiye$yeniolum[i] <-  covidVeriTurkiye[i, "Ã–lÃ¼m"] - covidVeriTurkiye[i-1, "Ã–lÃ¼m"]
+  covidVeriTurkiye$yenitani[i] <-  covidVeriTurkiye[i, "Tani"] - covidVeriTurkiye[i-1, "Tani"]
+  covidVeriTurkiye$yeniolum[i] <-  covidVeriTurkiye[i, "Ölüm"] - covidVeriTurkiye[i-1, "Ölüm"]
 }
 
-#View(covidVeriTurkiye)
+
 covid_kasim <- filter(covidVeriTurkiye, Tarih >= "2020-11-15" & Tarih <= "2020-11-30")
-#View(covid_kasim)
 
-# Toplam vaka sayÄ±sÄ±nÄ± topvakpdf olarak kaydet
-ggplot(covid_kasim, aes(Tarih, Tani)) + 
-  geom_col(fill= "salmon") +
-  scale_y_continuous(labels = scales::comma) +
-  labs(x = "Tarih", y = "Toplam Vaka", 
-       title = "KasÄ±m 2020 COVID Toplam Vaka SayÄ±sÄ±",
-       subtitle = "15.11.2020-30.11.2020 tarihleri arasÄ± COVID-19 vaka sayÄ±sÄ±",
-       caption = "Kaynak: https://corona.cbddo.gov.tr/Home/History") + 
-  theme_minimal()+
- theme(
-    plot.title = element_text(color = "red", face = "bold"),
-    plot.subtitle = element_text(color = "blue"),
-    plot.caption = element_text(color = "green", face = "italic")
-  )
-ggsave("toplamvaka.png")
 
-# Toplam Ã–lÃ¼m sayÄ±sÄ±
-ggplot(covid_kasim, aes(Tarih, Ã–lÃ¼m)) + 
-  geom_col(fill= "darksalmon") +
-  scale_y_continuous(labels = scales::comma)+
-  labs(x = "Tarih", y = "Toplam Ã–lÃ¼m", 
-       title = "KasÄ±m 2020 COVID-19 Toplam Ã–lÃ¼m SayÄ±sÄ±",
-       subtitle = "15.11.2020-30.11.2020 tarihleri arasÄ± COVID-19 Ã¶lÃ¼m sayÄ±sÄ±",
-       caption = "Kaynak: https://corona.cbddo.gov.tr/Home/History") + 
-  theme_minimal()+
-  theme(
-    plot.title = element_text(color = "red", face = "bold"),
-    plot.subtitle = element_text(color = "blue"),
-    plot.caption = element_text(color = "green", face = "italic")
-  )
-ggsave("toplamolum.png")
 
-# GÃ¼nlÃ¼k vaka sayÄ±sÄ±
-ggplot(covid_kasim, aes(Tarih, yenitani)) + 
-  geom_col(fill= "darkred") +
-  scale_y_continuous(labels = scales::comma) +
-  labs(x = "Tarih", y = "GÃ¼nlÃ¼k Vaka", 
-       title = "KasÄ±m 2020 COVID-19 GÃ¼nlÃ¼k Vaka SayÄ±sÄ±",
-       subtitle = "15.11.2020-30.11.2020 tarihleri arasÄ± COVID-19 gÃ¼nlÃ¼k vaka sayÄ±sÄ±",
-       caption = "Kaynak: https://corona.cbddo.gov.tr/Home/History")+
-  theme_minimal() +
-  theme(
-    plot.title = element_text(color = "red",face = "bold"),
-    plot.subtitle = element_text(color = "blue"),
-    plot.caption = element_text(color = "brown", face = "italic")
-  )
-ggsave("gunlukvaka.png")
-
-# GÃ¼nlÃ¼k Ã–lÃ¼m sayÄ±sÄ±
-ggplot(covid_kasim, aes(Tarih, yeniolum)) + 
+# Toplam vaka sayisi
+p_tv <- ggplot(covid_kasim, aes(Tarih, Tani)) + 
   geom_col(fill= "red") +
   scale_y_continuous(labels = scales::comma) +
-  labs(x = "Tarih", y = "GÃ¼nlÃ¼k Ã–lÃ¼m", 
-       title = "KasÄ±m 2020 COVID-19 GÃ¼nlÃ¼k Ã–lÃ¼m SayÄ±sÄ±",
-       subtitle = "15.11.2020-30.11.2020 tarihleri arasÄ± COVID-19 Ã¶lÃ¼m sayÄ±sÄ±",
-       caption = "Kaynak: https://corona.cbddo.gov.tr/Home/History")+
-  theme_classic() +
-  theme(
-    plot.title = element_text(color = "red", face = "bold"),
-    plot.subtitle = element_text(color = "blue"),
-    plot.caption = element_text(color = "brown", face = "italic")
+  coord_cartesian(ylim = c(350000, 550000)) +
+  labs(x = "Tarih", y = "Toplam Vaka", 
+       title = "Kasim 2020 COVID-19 Toplam Vaka Sayisi",
+       subtitle = "15.11.2020-30.11.2020 tarihleri arasi COVID-19 toplam vaka sayisi",
+       caption = "Kaynak: https://corona.cbddo.gov.tr/Home/History") + 
+  theme_minimal_grid() +
+  theme(axis.text = element_text(size = 50),
+        axis.title = element_text(size = 50),
+    plot.title = element_text(color = "red", size = 50, face = "bold"),
+    plot.subtitle = element_text(color = "blue", size = 40),
+    plot.caption = element_text(color = "brown", size = 30, face = "italic")
   )
-ggsave("gunlukolum.png")
+#ggsave("toplamvaka.png")
+
+# Toplam Ölüm Sayisi
+p_to <- ggplot(covid_kasim, aes(Tarih, Ölüm)) + 
+  geom_col(fill= "darkred") +
+  scale_y_continuous(labels = scales::comma)+
+  coord_cartesian(ylim = c(10000, 14500))+
+  labs(x = "Tarih", y = "Toplam Ölüm", 
+       title = "KasÄ±m 2020 COVID-19 Toplam Toplam Ölüm Sayisi",
+       subtitle = "15.11.2020-30.11.2020 tarihleri arasÄ± COVID-19 toplam ölüm sayisi",
+       caption = "Kaynak: https://corona.cbddo.gov.tr/Home/History") + 
+  theme_minimal_grid()+
+  theme(axis.text = element_text(size = 50),
+        axis.title = element_text(size = 50),
+    plot.title = element_text(color = "red", size = 50, face = "bold"),
+    plot.subtitle = element_text(color = "blue", size = 40),
+    plot.caption = element_text(color = "brown", size = 30, face = "italic")
+  )
+#ggsave("toplamolum.png")
+
+# Günlük Vaka Sayisi
+p_gv <- ggplot(covid_kasim, aes(Tarih, yenitani)) + 
+  geom_col(fill = "lightblue") +
+  scale_y_continuous(labels = scales::comma) +
+  labs(x = "Tarih", y = "Günlük Vaka", 
+       title = "KasÄ±m 2020 COVID-19 Günlük Vaka Sayisi",
+       subtitle = "15.11.2020-30.11.2020 tarihleri arasÄi COVID-19 günlük vaka sayisi",
+       caption = "Kaynak: https://corona.cbddo.gov.tr/Home/History")+
+  theme_minimal_grid()+
+  theme(axis.text = element_text(size = 50),
+        axis.title = element_text(size = 50),
+    plot.title = element_text(color = "red", size = 50, face = "bold"),
+    plot.subtitle = element_text(color = "blue", size = 40),
+    plot.caption = element_text(color = "brown", size = 30, face = "italic")
+  )
+#ggsave("gunlukvaka.png")
+
+# Günlük Ölüm Sayisi
+p_go <- ggplot(covid_kasim, aes(Tarih, yeniolum)) + 
+  geom_col(fill = "blue") +
+  scale_y_continuous(labels = scales::comma) +
+  labs(x = "Tarih", y = "Günlük Ölüm", 
+       title = "Kasim 2020 COVID-19 Günlük Ölüm Sayisi",
+       subtitle = "15.11.2020-30.11.2020 tarihleri arasi COVID-19 günlük ölüm sayisi",
+       caption = "Kaynak: https://corona.cbddo.gov.tr/Home/History")+
+  theme_minimal_grid() +
+  theme(axis.text = element_text(size = 50),
+        axis.title = element_text(size = 50),
+    plot.title = element_text(color = "red", size = 50, face = "bold"),
+    plot.subtitle = element_text(color = "blue", size = 40),
+    plot.caption = element_text(color = "brown", size = 30, face = "italic")
+  )
+#ggsave("gunlukolum.png")
 
 #vaka ve Ã¶lÃ¼mler
 df_toplam_vaka <- data.frame(covid_kasim$Tarih, covid_kasim$Tani)
 #View(df_toplam_vaka)
 
-df_toplam_olum <- data.frame(covid_kasim$Tarih, covid_kasim$Ã–lÃ¼m)
+df_toplam_olum <- data.frame(covid_kasim$Tarih, covid_kasim$Ölüm)
 #View(df_toplam_olum)
 
 df_gunluk_vaka <- data.frame(covid_kasim$Tarih, covid_kasim$yenitani)
@@ -127,30 +137,45 @@ df_gunluk_olum <- data.frame(covid_kasim$Tarih, covid_kasim$yeniolum)
 #View(df_gunluk_olum)
 
 
-df_tum_veriler <- data.frame(covid_kasim$Tarih, covid_kasim$Tani, covid_kasim$Ã–lÃ¼m, covid_kasim$yenitani, covid_kasim$yeniolum)
+df_tum_veriler <- data.frame(covid_kasim$Tarih, covid_kasim$Tani, covid_kasim$Ölüm, covid_kasim$yenitani, covid_kasim$yeniolum)
 #View(df_tum_veriler)
 
-colnames(df_tum_veriler)[] <- c('Tarih', 'Toplam vaka', 'Toplam Ã¶lÃ¼m', 'GÃ¼nlÃ¼k vaka', 'GÃ¼nlÃ¼k Ã¶lÃ¼m')
+colnames(df_tum_veriler)[] <- c('Tarih', 'Toplam vaka', 'Toplam Ölüm', 'Günlük Vaka', 'Günlük Ölüm')
 
 #View(df_tum_veriler)
 
 melt_vakalari <- reshape2::melt(df_tum_veriler, id.var = "Tarih")
 #View(melt_vakalari)
 
-
-ggplot(melt_vakalari, aes(x = Tarih, y = value, group = variable, col = variable)) +
-  geom_line() +
-  scale_y_log10(name = "Logaritmik Vaka SayÄ±larÄ±", labels = scales::comma) + 
+p_gt <- ggplot(melt_vakalari, aes(x = Tarih, y = value, group = variable, col = variable)) +
+  geom_line(size=3) +
+  scale_y_log10(name = "Vaka Sayilari (Logaritmik)", labels = scales::comma) + 
   labs(x = "Tarih",  
-     title = "KasÄ±m 2020 COVID-19 Tablosu",
-     subtitle = "15.11.2020-30.11.2020 tarihleri arasÄ± COVID-19 verisi",
+     title = "Kasim 2020 COVID-19 Tablosu",
+     subtitle = "15.11.2020-30.11.2020 tarihleri arasi COVID-19 verisi",
      caption = "Kaynak: https://corona.cbddo.gov.tr/Home/History")+
-  theme_modern_rc()+
-  theme(
-    plot.title = element_text(color = "red", face = "bold"),
-    plot.subtitle = element_text(color = "white"),
-    plot.caption = element_text(color = "gray", face = "italic")
+  theme_minimal_grid() +
+  theme(axis.text = element_text(size = 50),
+        axis.title = element_text(size = 50),
+    plot.title = element_text(color = "red", size = 50, face = "bold"),
+    plot.subtitle = element_text(color = "blue",size = 40),
+    plot.caption = element_text(color = "gray", size =30, face = "italic"),
+    legend.title = element_text(size = 40),
+    legend.text = element_text(size = 30)
   )
-ggsave("genelhat.png")
+#ggsave("genelhat.png")
+
+# # son gün tablosu
+# p_tab <- ggtexttable(covid_kasim, rows= NULL, theme = ttheme("light"))
+# 
+
+# plot_grid(p_tv, p_to)
+# plot_grid(p_gv, p_to)
+# plot_grid(p_gt, p_tab)
+plot_grid(p_tv, p_to, p_gv, p_go, p_gt, nrow = 3, ncol = 2, align = "hv", margin(20,20,20,20))
 
 ```
+
+
+
+
