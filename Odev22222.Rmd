@@ -3,9 +3,9 @@ title: "Odev-2"
 author: "Ahmet ÇETİNKAYA"
 date: "03/12/2020"
 output:
-  html_document: default
-  pdf_document: default
   word_document: default
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
